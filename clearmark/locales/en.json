@@ -1,0 +1,17 @@
+{
+  "cli.inspect.header": "Inspecting {path}",
+  "cli.inspect.clean": "No provenance marks found.",
+  "cli.inspect.found": "Found {count} potential marker(s):",
+  "cli.inspect.marker_line": "  - {kind}: {detail}",
+  "cli.clean.done": "Cleaned: {input} -> {output} ({removed} marker(s) removed)",
+  "cli.clean.already_clean": "{path} is already clean — nothing written.",
+  "cli.clean.dry_run": "Dry run: {count} marker(s) would be removed from {path} (no file written).",
+  "cli.error.unsupported": "Unsupported file type: {ext}",
+  "cli.error.not_found": "File not found: {path}",
+  "cli.error.binary_as_text": "Refusing to treat {path} as text: looks like binary ({kind}). Use 'clearmark clean' (auto format routing) instead, or pass --force-text.",
+  "cli.error.output_exists": "{path} already exists. Pass --force to overwrite.",
+  "cli.lang.list": "Available languages: {langs}",
+  "server.starting": "clearmark service listening on http://{host}:{port}",
+  "server.error.bad_request": "Bad request: {detail}",
+  "server.error.unknown_format": "Unrecognized file format for '{name}'."
+}

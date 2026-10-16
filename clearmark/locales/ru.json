@@ -1,0 +1,17 @@
+{
+  "cli.inspect.header": "Проверка {path}",
+  "cli.inspect.clean": "Следов ИИ-меток не найдено.",
+  "cli.inspect.found": "Найдено меток: {count}",
+  "cli.inspect.marker_line": "  - {kind}: {detail}",
+  "cli.clean.done": "Очищено: {input} -> {output} (удалено меток: {removed})",
+  "cli.clean.already_clean": "{path} уже чист — файл не изменён.",
+  "cli.clean.dry_run": "Тестовый прогон: в {path} будет удалено меток: {count} (файл не записывается).",
+  "cli.error.unsupported": "Неподдерживаемый тип файла: {ext}",
+  "cli.error.not_found": "Файл не найден: {path}",
+  "cli.error.binary_as_text": "{path} похож на бинарный файл ({kind}), как текст не обрабатывается. Используйте 'clearmark clean' (автоопределение формата) или флаг --force-text.",
+  "cli.error.output_exists": "{path} уже существует. Используйте --force для перезаписи.",
+  "cli.lang.list": "Доступные языки: {langs}",
+  "server.starting": "Сервис clearmark запущен на http://{host}:{port}",
+  "server.error.bad_request": "Некорректный запрос: {detail}",
+  "server.error.unknown_format": "Не удалось распознать формат файла '{name}'."
+}

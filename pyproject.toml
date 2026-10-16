@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clearmark"
+version = "0.1.0"
+description = "Privacy tool that strips AI provenance marks (invisible Unicode, EXIF/XMP/C2PA, doc properties) from content you own."
+readme = "README.en.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "dmminga1983" }]
+dependencies = [
+    "Pillow>=10.0",
+    "pypdf>=4.0",
+]
+
+[project.scripts]
+clearmark = "clearmark.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/dmminga1983/minga-clearmark"
+Issues = "https://github.com/dmminga1983/minga-clearmark/issues"
+
+[tool.setuptools.packages.find]
+include = ["clearmark*"]
+
+[tool.setuptools.package-data]
+clearmark = ["locales/*.json"]
