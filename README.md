@@ -1,39 +1,38 @@
 # clearmark
 
-**English version: [README.en.md](README.en.md)**
+A privacy tool that strips AI provenance marks — invisible Unicode
+characters, EXIF/XMP/C2PA metadata, and document properties — from
+**your own** text, images, PDFs, and DOCX/XLSX/PPTX files.
 
-Инструмент для приватности: удаляет ИИ-метки происхождения (provenance marks) —
-невидимые юникод-символы, EXIF/XMP/C2PA-метаданные и свойства документов —
-из **вашего собственного** текста, изображений, PDF и DOCX/XLSX/PPTX.
+**This is not a tool for academic fraud or for passing AI-generated text
+off as human-written.** It exists for privacy and metadata hygiene on
+content you own or are authorized to process — drafts, working documents,
+your own photos. Whether it's appropriate for your situation is your call
+— see "Ethics" below.
 
-**Это не инструмент для академического мошенничества и не способ выдать
-ИИ-текст за написанный человеком.** Назначение — приватность и гигиена
-метаданных для контента, которым вы владеете или на обработку которого
-у вас есть право: черновики, рабочие документы, собственные фото. Решайте
-сами, уместно ли применять его в вашей ситуации — см. раздел «Этика» ниже.
+[Русская версия →](README.ru.md)
 
 [![CI](https://github.com/dmminga1983/minga-clearmark/actions/workflows/ci.yml/badge.svg)](https://github.com/dmminga1983/minga-clearmark/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## Что умеет
+## What it does
 
-| Слой | Что убирает | Как |
+| Layer | Removes | How |
 | --- | --- | --- |
-| **Текст (Layer A)** | Невидимые юникод-метки: zero-width пробелы, bidi-управляющие символы, language-tag символы, «экзотические» пробелы, мягкий перенос | Детерминированный Python, без внешних сервисов |
-| **Изображения** | EXIF, XMP, текстовые чанки PNG (`Software`, `parameters`, `C2PA` и т. п.) | PNG, JPEG, WebP, BMP, GIF, TIFF — через Pillow |
-| **PDF** | Info-словарь документа (Author, Producer, Creator…), XMP-поток | pypdf (полная пересборка объектного графа, не инкрементальная правка) |
-| **DOCX/XLSX/PPTX** | `docProps/core.xml` (автор, тема, ключевые слова…), `docProps/custom.xml` | Построчная пересборка zip-контейнера |
+| **Text (Layer A)** | Invisible Unicode carriers: zero-width spaces, bidi control characters, language-tag characters, exotic spaces, soft hyphen | Deterministic Python, no external services |
+| **Images** | EXIF, XMP, PNG text chunks (`Software`, `parameters`, `C2PA`, etc.) | PNG, JPEG, WebP, BMP, GIF, TIFF — via Pillow |
+| **PDF** | Document Info dictionary (Author, Producer, Creator…), XMP stream | pypdf (full object-graph rebuild, not an incremental edit) |
+| **DOCX/XLSX/PPTX** | `docProps/core.xml` (author, subject, keywords…), `docProps/custom.xml` | Entry-by-entry zip container rebuild |
 
-**Чего не умеет (сознательно, честно указано):** статистические водяные
-знаки, «зашитые» в выбор токенов при генерации текста (то, что иногда
-называют SynthID-text/KGW-схемами). Их надёжное удаление требует
-переписывания текста другой моделью, что неизбежно портит стиль и точность
-формулировок — это компромисс, который должен делать осознанно сам
-пользователь, а не тулза по умолчанию. Пиксельные водяные знаки в
-изображениях (стеганографические, устойчивые к пересохранению) — тоже вне
-зоны ответственности этого проекта.
+**What it deliberately doesn't do:** statistical watermarks embedded in
+token-sampling choices during text generation (what's sometimes called
+SynthID-text/KGW-class schemes). Reliably removing those requires
+rewriting the text with another model, which unavoidably degrades style
+and precision — that's a tradeoff the user should make deliberately, not
+one a tool should apply by default. Pixel-domain image watermarks
+(steganographic, resave-resistant) are also out of scope for this project.
 
-## Установка
+## Install
 
 ```bash
 git clone https://github.com/dmminga1983/minga-clearmark.git
@@ -42,35 +41,35 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
 ```
 
-Требуется Python 3.10+. Зависимости: `Pillow`, `pypdf` (см. `requirements.txt`).
+Requires Python 3.10+. Dependencies: `Pillow`, `pypdf` (see `requirements.txt`).
 
-## Использование (CLI)
+## CLI usage
 
-Сообщения CLI многоязычны: автоопределение по системной локали, либо
-`--lang ru` / `--lang en`, либо переменная окружения `CLEARMARK_LANG`.
-Список доступных языков: `clearmark languages`.
+CLI messages are multilingual: auto-detected from the system locale, or
+set explicitly with `--lang ru` / `--lang en`, or the `CLEARMARK_LANG`
+environment variable. List available languages with `clearmark languages`.
 
 ```bash
-# Проверить файл, не изменяя его
+# Report findings without modifying the file
 clearmark inspect draft.md
 
-# Создать очищенную копию
+# Write a cleaned copy
 clearmark clean draft.md -o draft.cleaned.md
 clearmark clean photo.png -o photo.cleaned.png
 clearmark clean report.docx -o report.cleaned.docx
 
-# Тестовый прогон — только отчёт, файл не пишется
+# Dry run — report only, nothing written
 clearmark clean --dry-run draft.md
 
-# Для языков, где неразрывный пробел значим (например, французская
-# типографика), не заменять «экзотические» пробелы на обычные:
+# For languages where a non-breaking space is meaningful typography
+# (e.g. French), keep exotic spaces instead of normalizing them:
 clearmark clean --no-normalize-spaces draft.md
 ```
 
-Код возврата `clearmark inspect`: `0` — чисто, `2` — найдены метки (удобно
-для pre-commit хуков), `1` — ошибка (файл не найден, неподдерживаемый формат).
+`clearmark inspect` exit codes: `0` clean, `2` marks found (handy for a
+pre-commit hook), `1` error (file not found, unsupported format).
 
-## HTTP-сервис
+## HTTP service
 
 ```bash
 python3 -m clearmark.server --host 127.0.0.1 --port 8765
@@ -84,11 +83,10 @@ curl -s -X POST http://127.0.0.1:8765/inspect \
   -d "{\"file\": \"$(base64 < draft.md | tr -d '\n')\", \"name\": \"draft.md\"}"
 ```
 
-По умолчанию сервис слушает только `127.0.0.1`. Для авторизации задайте
-`CLEARMARK_API_KEY` — тогда каждый запрос должен нести заголовок
-`Authorization: Bearer <key>` (см. `.env.example`).
+Binds to `127.0.0.1` only by default. Set `CLEARMARK_API_KEY` to require
+`Authorization: Bearer <key>` on every request (see `.env.example`).
 
-## Разработка
+## Development
 
 ```bash
 pip install -r requirements-dev.txt
@@ -96,16 +94,15 @@ pytest
 ruff check .
 ```
 
-## Этика и ответственность
+## Ethics and responsibility
 
-Этот проект — для приватности и гигиены метаданных **вашего собственного**
-контента, а не для академического мошенничества, не для того, чтобы выдать
-ИИ-генерацию за написанный человеком текст, и не для обхода систем
-обнаружения плагиата. Пользователь несёт ответственность за соблюдение
-применимого законодательства, правил своей организации/учебного заведения
-и условий использования сервисов, контент которых обрабатывается.
-Разработчики не несут ответственности за злоупотребления.
+This project is for privacy and metadata hygiene on **your own** content
+— not for academic fraud, not for passing AI output off as human-written,
+and not for evading plagiarism detection. You're responsible for
+complying with applicable law, your organization's/institution's rules,
+and the terms of service of whatever produced the content you process.
+The developers disclaim liability for misuse.
 
-## Лицензия
+## License
 
-MIT — см. [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).

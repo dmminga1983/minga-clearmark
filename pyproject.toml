@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "clearmark"
 version = "0.1.0"
 description = "Privacy tool that strips AI provenance marks (invisible Unicode, EXIF/XMP/C2PA, doc properties) from content you own."
-readme = "README.en.md"
+readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "dmminga1983" }]
